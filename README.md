@@ -5,12 +5,12 @@ A production-grade, end-to-end Security Operations Centre (SOC) pipeline built f
 ## Architecture
 ## Components
 
-| Component | Role | Server |
+| Component | Role | Version |
 |---|---|---|
-| OpenCanary | Honeypot — captures real attacker TTPs | 164.92.125.22 |
-| Wazuh | SIEM — log analysis, alerting, correlation | 146.190.133.43 |
-| Shuffle | SOAR — automated alert enrichment and routing | 146.190.133.43 |
-| TheHive | Incident Response — case management | 143.198.164.142 |
+| OpenCanary | Honeypot — captures real attacker TTPs | 0.9.7 |
+| Wazuh | SIEM — log analysis, alerting, correlation | 4.9.2 |
+| Shuffle | SOAR — automated alert enrichment and routing | Latest |
+| TheHive | Incident Response — case management | 5.5.14 |
 
 ## What It Does
 
@@ -24,18 +24,45 @@ A production-grade, end-to-end Security Operations Centre (SOC) pipeline built f
 
 ## Real Threat Intelligence Captured
 
-This pipeline has captured real SSH brute force attacks including:
+Within 3 minutes of deployment this pipeline captured real SSH brute force attacks including:
 - Attacker IPs from multiple countries
-- Real credentials being attempted
+- Real credentials being attempted (usernames and passwords)
 - Attack timing and frequency patterns
-- SSH client fingerprints
+- SSH client fingerprints (libssh2, OpenSSH for Windows)
 
 ## Stack
 
-- **OpenCanary** - Honeypot
-- **Wazuh 4.9.2** - SIEM
-- **Shuffle** - SOAR
-- **TheHive 5.5** - Incident Response
+- **OpenCanary** - Honeypot (SSH, FTP, HTTP, Telnet)
+- **Wazuh 4.9.2** - SIEM with custom detection rules
+- **Shuffle** - SOAR automation platform
+- **TheHive 5.5** - Incident Response & Case Management
+
+## Quick Start
+
+### 1. Deploy Honeypot
+```bash
+pip install opencanary
+cp configs/opencanary.conf /etc/opencanaryd/
+systemctl start opencanary
+```
+
+### 2. Configure Wazuh Rules
+```bash
+cp rules/local_rules.xml /var/ossec/etc/rules/
+systemctl restart wazuh-manager
+```
+
+### 3. Deploy TheHive Integration
+```bash
+cp integrations/custom-thehive* /var/ossec/integrations/
+chmod 750 /var/ossec/integrations/custom-thehive*
+```
+
+### 4. Deploy Shuffle
+```bash
+git clone https://github.com/Shuffle/Shuffle
+cd Shuffle && docker compose up -d
+```
 
 ## Author
 
