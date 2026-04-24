@@ -1,0 +1,27 @@
+<group name="opencanary,honeypot">
+
+  <rule id="100200" level="12">
+    <decoded_as>json</decoded_as>
+    <field name="node_id">opencanary</field>
+    <description>OpenCanary: Honeypot interaction detected</description>
+  </rule>
+
+  <rule id="100201" level="15">
+    <if_sid>100200</if_sid>
+    <field name="logtype">^4002$</field>
+    <description>OpenCanary: SSH brute force login attempt on honeypot</description>
+  </rule>
+
+  <rule id="100202" level="12">
+    <if_sid>100200</if_sid>
+    <field name="logtype">^4001$</field>
+    <description>OpenCanary: SSH connection to honeypot</description>
+  </rule>
+
+  <rule id="100203" level="12">
+    <if_sid>100200</if_sid>
+    <field name="logtype">^2000$</field>
+    <description>OpenCanary: FTP login attempt on honeypot</description>
+  </rule>
+
+</group>
